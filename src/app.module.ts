@@ -6,14 +6,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 
+const mongoUri =
+  process.env.MONGO_URI ||
+  'mongodb://root:example@mongo:27017/mongo?authSource=admin';
+console.log(mongoUri);
+
 @Module({
-  imports: [
-    MongooseModule.forRoot(
-      'mongodb://root:example@localhost:27017/mongo?authSource=admin',
-    ),
-    ProductsModule,
-    OrdersModule,
-  ],
+  imports: [MongooseModule.forRoot(mongoUri), ProductsModule, OrdersModule],
   controllers: [AppController],
   providers: [AppService],
 })
