@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { Error, ResponseDto } from '@/dto/response.dto';
+import { Error, ResponseDto } from '@/common/dto/response.dto';
 import { ZodValidationException } from 'nestjs-zod';
 import z, { ZodError } from 'zod';
 
