@@ -12,12 +12,14 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { ResponseDto } from '@/common/dto/response.dto';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Find all users' })
   async findAll() {
     const response = await this.userService.findAll();
     return new ResponseDto({
@@ -28,6 +30,7 @@ export class UserController {
   }
 
   @Get(':userId')
+  @ApiOperation({ summary: 'Find user by ID' })
   async findOne(@Param('userId', ParseUUIDPipe) userId: string) {
     const response = await this.userService.findOne(userId);
     console.log(response);
@@ -39,6 +42,7 @@ export class UserController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create user' })
   async create(@Body() body: CreateUserDto) {
     const response = await this.userService.create(body);
     return new ResponseDto({
@@ -49,6 +53,7 @@ export class UserController {
   }
 
   @Put(':userId')
+  @ApiOperation({ summary: 'Update user' })
   async update(
     @Param('userId', ParseUUIDPipe) userId: string,
     @Body() body: UpdateUserDto,
@@ -62,6 +67,7 @@ export class UserController {
   }
 
   @Delete(':userId')
+  @ApiOperation({ summary: 'Delete user' })
   async remove(@Param('userId', ParseUUIDPipe) userId: string) {
     const response = await this.userService.remove(userId);
     return new ResponseDto({

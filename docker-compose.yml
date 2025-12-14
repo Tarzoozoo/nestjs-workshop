@@ -13,45 +13,6 @@ services:
   #   depends_on:
   #     - mongo
 
-  # nest-app2:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   image: nest-app2
-  #   container_name: nest-app2
-  #   environment:
-  #     - PORT=3000
-  #     - MONGO_URI=mongodb://root:example@mongo:27017  # Connect to the MongoDB service in the Docker network
-  #   ports:
-  #     - "3001:3000"
-  #   depends_on:
-  #     - mongo
-  
-  # nest-app3:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   image: nest-app3
-  #   container_name: nest-app3
-  #   environment:
-  #     - PORT=3000
-  #     - MONGO_URI=mongodb://root:example@mongo:27017  # Connect to the MongoDB service in the Docker network
-  #   ports:
-  #     - "3002:3000"
-  #   depends_on:
-  #     - mongo
-      
-  # mongo:
-  #   image: mongo
-  #   restart: always
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: root
-  #     MONGO_INITDB_ROOT_PASSWORD: example
-  #   ports:
-  #     - "27017:27017"
-  #   volumes:
-  #     - mongo-data:/data/db
-
   postgres-101:
     image: postgres:latest
     container_name: postgres-101
@@ -67,18 +28,5 @@ services:
       - "5433:5432"
     restart: unless-stopped
 
-  # nginx:
-  #   image: nginx:latest
-  #   container_name: nginx
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - ./conf.d:/etc/nginx/conf.d
-  #   depends_on:
-  #     - nest-app
-  #     - nest-app2
-  #     - nest-app3
-
 volumes:
-  mongo-data:
   postgres_data:

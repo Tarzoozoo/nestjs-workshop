@@ -1,13 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-
-// import { MongooseModule } from '@nestjs/mongoose';
-// import { ProductsModule } from './products/products.module';
-// import { OrdersModule } from './orders/orders.module';
 import { CountModule } from './module/count/count.module';
 import { UserModule } from './module/user/user.module';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { User } from './user/user.entity';
 import { DatabaseModule } from './database/database.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
@@ -21,9 +15,6 @@ console.log(mongoUri);
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    // MongooseModule.forRoot(mongoUri),
-    // ProductsModule,
-    // OrdersModule,
     CountModule,
     UserModule,
     DatabaseModule,

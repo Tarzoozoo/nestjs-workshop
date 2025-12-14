@@ -1,15 +1,13 @@
-# NestJS Project with MongoDB
+# NestJS Project
 
-This is a NestJS project with MongoDB as the database. It includes two modules: **Products** and **Orders**, where:
-
-- **ProductsModule**: Handles the creation and retrieval of product data.
-- **OrdersModule**: Manages the order creation and links products to orders.
+This is a NestJS project with PostgreSQL as the database.
 
 ## Features
 
-- **MongoDB**: The project uses MongoDB as the data store. The MongoDB service is configured through Docker.
-- **Validation**: Global validation using NestJS's `ValidationPipe` to ensure that DTOs (Data Transfer Objects) are validated properly.
-- **Mongoose Integration**: The `MongooseModule` is used to integrate MongoDB with NestJS for easy interaction with the database.
+- Create new users with necessary details such as first name, last name, age, gender, interests, and description.
+- Read user data by fetching user details based on user ID.
+- Update existing users' information.
+- Delete users based on their ID.
 
 ## Project Setup
 
@@ -57,29 +55,7 @@ $ npm run start:prod
 
 ## Endpoints
 
-1. Products:
-
-`POST /products`: Create a new product.
-
-    Request Body: CreateProductDto (Name, Description, Price)
-
-`GET /products`: Retrieve all products.
-
-`GET /products/:id`: Retrieve a product by ID.
-
-`PATCH /products/:id`: Update a product by ID.
-
-`DELETE /products/:id`: Remove a product by ID.
-
-2. Orders:
-
-`POST /orders`: Create a new order with a linked product.
-
-    Request Body: CreateOrderDto (Product ID, Quantity)
-
-`GET /orders/:id`: Retrieve an order by ID.
-
-3. User:
+1. User:
 
 `POST /api/user`
 
