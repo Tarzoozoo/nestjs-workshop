@@ -1,18 +1,25 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
-import { UserService } from '../user/user.service';
-import { AuthUserInfo, AccessToken } from './auth.model';
+import {
+  AuthUserInfo,
+  AccessToken,
+  AuthModel,
+  authModelSchema,
+} from './auth.model';
 import { JwtService } from '@nestjs/jwt';
+import { AuthRepository } from './auth.repository';
+import { RegisterUserDTO } from './auth.dto';
+import { AuthInsertEntity } from './auth.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
+    private readonly authRepo: AuthRepository,
     private readonly jwtService: JwtService,
   ) {}
 
   async validateEmail(email: string, password: string): Promise<AuthUserInfo> {
-    const user = await this.userService.findAuthOneByEmail(email);
+    const user = await this.findAuthOneByEmail(email);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
@@ -36,5 +43,25 @@ export class AuthService {
     return {
       access_token: access_token,
     };
+  }
+
+  async register(payload: RegisterUserDTO): Promise<AuthModel> {
+    const hashedPassword: string = await bcrypt.hash(payload.password, 10);
+    const registerEntity: AuthInsertEntity = {
+      name: payload.name,
+      email: payload.email,
+      password: hashedPassword,
+      tel: payload.tel,
+    };
+    const entity = await this.authRepo.createAuthRegister(registerEntity);
+    return authModelSchema.parse(entity);
+  }
+
+  async findAuthOneByEmail(email: string): Promise<AuthModel | null> {
+    const entity = await this.authRepo.findAuthByEmail(email);
+    if (!entity) {
+      return null;
+    }
+    return authModelSchema.parse(entity);
   }
 }

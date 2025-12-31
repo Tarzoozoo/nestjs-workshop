@@ -8,24 +8,18 @@ import {
   Delete,
   ParseUUIDPipe,
   HttpStatus,
-  UseGuards,
-  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import {
-  CreateUserDto,
-  UpdateUserDto,
-  CreateRegisterUserDto,
-} from './user.dto';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 import { ResponseDto } from '@/common/dto/response.dto';
-import { ApiOperation } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@/common/gards/jwt.auth.guard';
+import { ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Find all users' })
   async findAll() {
     const response = await this.userService.findAll();
@@ -36,20 +30,8 @@ export class UserController {
     });
   }
 
-  // JWT protected route
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  @ApiOperation({ summary: 'Get user profile' })
-  async getProfile(@Req() req) {
-    const userInfo = await this.userService.findAuthOneByEmail(req.user.email);
-    return new ResponseDto({
-      code: HttpStatus.OK,
-      message: 'Get user information successfully',
-      data: userInfo,
-    });
-  }
-
   @Get(':userId')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Find user by ID' })
   async findOne(@Param('userId', ParseUUIDPipe) userId: string) {
     const response = await this.userService.findOne(userId);
@@ -61,6 +43,7 @@ export class UserController {
   }
 
   @Post()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Create user' })
   async create(@Body() body: CreateUserDto) {
     const response = await this.userService.create(body);
@@ -72,6 +55,7 @@ export class UserController {
   }
 
   @Put(':userId')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user' })
   async update(
     @Param('userId', ParseUUIDPipe) userId: string,
@@ -86,32 +70,13 @@ export class UserController {
   }
 
   @Delete(':userId')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete user' })
   async remove(@Param('userId', ParseUUIDPipe) userId: string) {
     const response = await this.userService.remove(userId);
     return new ResponseDto({
       code: HttpStatus.OK,
       message: 'User deleted successfully',
-      data: response,
-    });
-  }
-
-  // Register endpoint
-  @Post('register')
-  @ApiOperation({ summary: 'Register user' })
-  async register(@Body() body: CreateRegisterUserDto) {
-    const existingUser = await this.userService.findAuthOneByEmail(body.email);
-    if (existingUser) {
-      return new ResponseDto({
-        code: HttpStatus.CONFLICT,
-        message: 'Email already in use',
-        data: null,
-      });
-    }
-    const response = await this.userService.register(body);
-    return new ResponseDto({
-      code: HttpStatus.CREATED,
-      message: 'User registered successfully',
       data: response,
     });
   }

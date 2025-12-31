@@ -8,6 +8,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Workshop example')
     .setDescription('The API description')
+    .addBearerAuth()
     .setVersion('1.0')
     .build();
 
