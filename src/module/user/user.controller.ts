@@ -8,11 +8,18 @@ import {
   Delete,
   ParseUUIDPipe,
   HttpStatus,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, UpdateUserDto } from './user.dto';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  CreateRegisterUserDto,
+} from './user.dto';
 import { ResponseDto } from '@/common/dto/response.dto';
 import { ApiOperation } from '@nestjs/swagger';
+import { JwtAuthGuard } from '@/common/gards/jwt.auth.guard';
 
 @Controller('user')
 export class UserController {
@@ -29,11 +36,23 @@ export class UserController {
     });
   }
 
+  // JWT protected route
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  @ApiOperation({ summary: 'Get user profile' })
+  async getProfile(@Req() req) {
+    const userInfo = await this.userService.findAuthOneByEmail(req.user.email);
+    return new ResponseDto({
+      code: HttpStatus.OK,
+      message: 'Get user information successfully',
+      data: userInfo,
+    });
+  }
+
   @Get(':userId')
   @ApiOperation({ summary: 'Find user by ID' })
   async findOne(@Param('userId', ParseUUIDPipe) userId: string) {
     const response = await this.userService.findOne(userId);
-    console.log(response);
     return new ResponseDto({
       code: HttpStatus.OK,
       message: 'Find user successfully',
@@ -73,6 +92,26 @@ export class UserController {
     return new ResponseDto({
       code: HttpStatus.OK,
       message: 'User deleted successfully',
+      data: response,
+    });
+  }
+
+  // Register endpoint
+  @Post('register')
+  @ApiOperation({ summary: 'Register user' })
+  async register(@Body() body: CreateRegisterUserDto) {
+    const existingUser = await this.userService.findAuthOneByEmail(body.email);
+    if (existingUser) {
+      return new ResponseDto({
+        code: HttpStatus.CONFLICT,
+        message: 'Email already in use',
+        data: null,
+      });
+    }
+    const response = await this.userService.register(body);
+    return new ResponseDto({
+      code: HttpStatus.CREATED,
+      message: 'User registered successfully',
       data: response,
     });
   }

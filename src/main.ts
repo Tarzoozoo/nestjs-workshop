@@ -16,6 +16,13 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
   app.setGlobalPrefix('api');
+  app.enableCors({
+    origin: true,
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: '*',
+    exposedHeaders: ['X-Estimated-Content-Length', 'content-disposition'],
+  });
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

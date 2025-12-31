@@ -30,7 +30,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof ZodValidationException) {
       const zodError = exception.getZodError() as ZodError;
-      console.log('HttpException');
       console.log('ZodValidationException', zodError);
       data = z.treeifyError(zodError);
     }

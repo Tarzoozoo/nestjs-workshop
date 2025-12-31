@@ -1,13 +1,21 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { eq, isNull, and } from 'drizzle-orm';
 import {
   UserEntity,
   UserInsertEntity,
   UserUpdateEntity,
   userEntitySchema,
+  AuthEntity,
+  AuthInsertEntity,
+  authEntitySchema,
 } from './user.entity';
 import { DatabaseSchema, InjectDb } from '@/database/database.provider';
 import { user } from '@/database/schemas/user.sql';
+import { auth } from '@/database/schemas/auth.sql';
 
 @Injectable()
 export class UserRepository {
@@ -15,7 +23,6 @@ export class UserRepository {
 
   async create(payload: UserInsertEntity): Promise<UserEntity> {
     const _user = await this.db.insert(user).values(payload).returning();
-
     return userEntitySchema.parse(_user[0]);
   }
 
@@ -54,7 +61,24 @@ export class UserRepository {
     if (!_user.length) {
       throw new InternalServerErrorException(`User '${id}' does not exist`);
     }
-
     return true;
+  }
+
+  // Auth methods
+  async createAuthRegister(payload: AuthInsertEntity): Promise<AuthEntity> {
+    const _auth = await this.db.insert(auth).values(payload).returning();
+
+    return authEntitySchema.parse(_auth[0]);
+  }
+
+  async findAuthByEmail(email: string): Promise<AuthEntity> {
+    const _auth = await this.db
+      .select()
+      .from(auth)
+      .where(eq(auth.email, email));
+    if (!_auth.length) {
+      throw new ForbiddenException(`Email '${email}' does not exist`);
+    }
+    return authEntitySchema.parse(_auth[0]);
   }
 }

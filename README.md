@@ -4,6 +4,7 @@ This is a NestJS project with PostgreSQL as the database.
 
 ## Features
 
+- Register and login user via JWT Token authentication.
 - Create new users with necessary details such as first name, last name, age, gender, interests, and description.
 - Read user data by fetching user details based on user ID.
 - Update existing users' information.
@@ -52,6 +53,39 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+
+## Endpoints Authentication
+
+1. Register
+
+    `POST /api/user/register`
+
+        curl --location 'http://localhost:3000/api/user/register' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "name": "Test",
+            "tel": "0851144636",
+            "email": "man@gmail.com",
+            "password": "12345678"
+        }'
+
+2. Login
+
+    `POST /api/user/register`
+
+        curl --location 'http://localhost:3000/api/auth/login' \
+        --header 'Content-Type: application/json' \
+        --data-raw '{
+            "email": "man@gmail.com",
+            "password": "12345678"
+        }'
+
+3. Get user info
+
+    `POST /api/user/profile`
+
+        curl --location 'http://localhost:3000/api/user/profile' \
+        --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbkBnbWFpbC5jb20iLCJzdWIiOiJlYmNkMzkwMi1kYThiLTQzMTgtYWYxZi03ZjVmY2U0NWM3NTEiLCJpYXQiOjE3NjcxNjIzNjcsImV4cCI6MTc2NzE2NTk2N30.nJI3sR6fwhTS0jcDfD36oYl2_GKZT4KXBBeeYzE_q-Q'
 
 ## Endpoints
 
