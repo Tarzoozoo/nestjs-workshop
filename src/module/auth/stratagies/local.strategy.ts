@@ -12,7 +12,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
   // The verify callback function (validate method) called by Passport
   async validate(email: string, password: string): Promise<AuthUserInfo> {
-    console.log('LocalStrategy initialized');
     return await this.authService.validateEmail(email, password);
   }
 }

@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AuthRepository } from './auth.repository';
 import { RegisterUserDTO } from './auth.dto';
 import { AuthInsertEntity } from './auth.entity';
-
+import { OAuthUser } from './oauth/types/oauth-user.type';
 @Injectable()
 export class AuthService {
   constructor(
@@ -43,6 +43,18 @@ export class AuthService {
     return {
       access_token: access_token,
     };
+  }
+
+  async registerFromOauthUser(payload: OAuthUser): Promise<AuthModel> {
+    const registerEntity: AuthInsertEntity = {
+      name: payload.firstName + ' ' + payload.lastName,
+      email: payload.email,
+      isOAuthUser: 'true',
+      tel: 'null',
+      password: 'null',
+    };
+    const entity = await this.authRepo.createAuthRegister(registerEntity);
+    return authModelSchema.parse(entity);
   }
 
   async register(payload: RegisterUserDTO): Promise<AuthModel> {

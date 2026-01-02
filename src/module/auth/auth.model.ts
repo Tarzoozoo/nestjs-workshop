@@ -13,4 +13,7 @@ export type AuthUserInfo = {
 
 export type AccessToken = {
   access_token: string;
+  expires_in?: number; // เพิ่ม optional
+  token_type?: string; // optional
+  refresh_token?: string; // optional
 };

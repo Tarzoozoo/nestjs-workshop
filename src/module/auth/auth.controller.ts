@@ -42,7 +42,7 @@ export class AuthController {
   })
   async register(@Body() body: RegisterUserDTO) {
     const existingUser = await this.authService.findAuthOneByEmail(body.email);
-    console.log('Existing user:', existingUser);
+
     if (existingUser) {
       return new ResponseDto({
         code: HttpStatus.CONFLICT,
@@ -50,7 +50,7 @@ export class AuthController {
         data: null,
       });
     }
-    console.log('Registering user:', body);
+
     const response = await this.authService.register(body);
     return new ResponseDto({
       code: HttpStatus.CREATED,
@@ -75,6 +75,9 @@ export class AuthController {
         },
       },
     },
+  })
+  @ApiOperation({
+    summary: 'Login with local strategy (email and password)',
   })
   loginLocal(@Request() req) {
     const usesInfo: AuthUserInfo = {
@@ -105,6 +108,9 @@ export class AuthController {
       },
     },
   })
+  @ApiOperation({
+    summary: 'Login with local strategy and get JWT access token',
+  })
   async login(@Request() req) {
     const usesInfo: AuthUserInfo = {
       id: req.user.id,
@@ -128,7 +134,6 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get user profile' })
   async getProfile(@Req() req) {
-    console.log('Getting profile for user:', req.user);
     const userInfo = await this.authService.findAuthOneByEmail(req.user.email);
     return new ResponseDto({
       code: HttpStatus.OK,

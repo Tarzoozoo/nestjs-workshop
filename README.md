@@ -1,10 +1,15 @@
 # NestJS Project
 
-This is a NestJS project with PostgreSQL as the database.
+This is a NestJS project with PostgreSQL as the database. Implementation of authentication and authorization in a NestJS application using Passport middleware. The project features both traditional email/password authentication and multi-provider OAuth2 integration with Google
 
 ## Features
 
+**Authentication & Authorization**
+- Register and login user via email and password.
 - Register and login user via JWT Token authentication.
+- Implementing Multi-Provider SSO in NestJS with OAuth2 (Google)
+
+**Submit the form**
 - Create new users with necessary details such as first name, last name, age, gender, interests, and description.
 - Read user data by fetching user details based on user ID.
 - Update existing users' information.
@@ -34,8 +39,15 @@ Ensure you have the following installed on your machine:
    ```
 
 ## Compile and run the project
+### Production
+```bash
+docker-compose up -d
+```
 
-Running MongoDB/PostgreSQL with Docker
+### Development
+
+Comment the nest-app in docker-compose.yaml, then
+running MongoDB/PostgreSQL with Docker
 
 ```bash
 docker-compose up -d
@@ -54,13 +66,31 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Database setup
+For docker
+```bash
+docker-compose exec nest-app npm run db:migrate
+```
+
+For local
+```bash
+npm run db:migrate
+```
+**Database Table**
+- User : User submited form table
+- Auth : The IAM-like table for manage user account
+- OAuth_account : OAuth provider table to link to the Auth table
+
+## Swagger UI
+[Swagger](http://localhost:3000/docs#/)
+
 ## Endpoints Authentication
 
-1. Register
+1.  Register
 
-    `POST /api/user/register`
+    `POST /api/auth/register`
 
-        curl --location 'http://localhost:3000/api/user/register' \
+        curl --location 'http://localhost:3000/api/auth/register' \
         --header 'Content-Type: application/json' \
         --data-raw '{
             "name": "Test",
@@ -69,9 +99,9 @@ $ npm run start:prod
             "password": "12345678"
         }'
 
-2. Login
+2.  Login
 
-    `POST /api/user/register`
+    `POST /api/auth/login`
 
         curl --location 'http://localhost:3000/api/auth/login' \
         --header 'Content-Type: application/json' \
@@ -80,14 +110,31 @@ $ npm run start:prod
             "password": "12345678"
         }'
 
-3. Get user info
+3.  Get user info
 
-    `POST /api/user/profile`
+    `POST /api/auth/profile`
 
-        curl --location 'http://localhost:3000/api/user/profile' \
+        curl --location 'http://localhost:3000/api/auth/profile' \
         --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbkBnbWFpbC5jb20iLCJzdWIiOiJlYmNkMzkwMi1kYThiLTQzMTgtYWYxZi03ZjVmY2U0NWM3NTEiLCJpYXQiOjE3NjcxNjIzNjcsImV4cCI6MTc2NzE2NTk2N30.nJI3sR6fwhTS0jcDfD36oYl2_GKZT4KXBBeeYzE_q-Q'
 
-## Endpoints
+## Endpoints OAuth2.0 Authentication
+
+1.  Authorization
+
+    `POST /api/oauth/{provider}`
+
+        curl -X 'GET' \
+        'http://localhost:3000/api/oauth/google' \
+        -H 'accept: */*'
+
+2.  Callback
+
+    `POST /api/user/register`
+
+        curl -X 'GET' 'http://localhost:3000/api/oauth/google/callback?code=4%2F0ATX87lPNHeKnbYhtutpk4Qj8CUO2Dnb8R3iEyzEW8nyAwMZ7O5d9Kx9F7kGszjkLHcNVMw&scope=email+profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent' \
+        -H 'accept: */*'
+
+## Endpoints for submiting the form
 
 1. User:
 
@@ -180,5 +227,10 @@ export class GetProjectDto extends createZodDto(getProjectDtoSchema) {}
 async getProjects(@Query() query: GetProjectDto) {}
 ```
 
+## Credit
+
+[OAuth2.0 Authentication Implementation](https://medium.com/@camillefauchier/multi-provider-oauth2-authentication-in-nestjs-beyond-basic-jwt-7945ece51bb3) and [Github](https://github.com/camillefauchier/tuto-multiple-oauth2-provider-nestjs/tree/tuto-multiple-oauth2-providers-nestjs)
+
+![image](docs/oauth2-flow.png)
 
 โลกของ NestJS คุยกันผ่าน Injection

@@ -1,0 +1,1 @@
+ALTER TABLE "auth" ADD COLUMN "is_oauth" text DEFAULT 'false' NOT NULL;

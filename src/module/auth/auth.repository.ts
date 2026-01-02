@@ -20,7 +20,7 @@ export class AuthRepository {
       .select()
       .from(auth)
       .where(eq(auth.email, email));
-    console.log('_auth:', _auth);
+
     if (!_auth.length) {
       return null;
     }

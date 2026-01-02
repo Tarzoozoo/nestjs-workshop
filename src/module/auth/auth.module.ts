@@ -25,5 +25,6 @@ import { AuthRepository } from './auth.repository';
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthRepository],
+  exports: [AuthService],
 })
 export class AuthModule {}

@@ -7,10 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { APP_PIPE, APP_GUARD } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { JwtAuthGuard } from './common/gards/jwt.auth.guard';
-const mongoUri =
-  process.env.MONGO_URI ||
-  'mongodb://root:example@mongo:27017/mongo?authSource=admin';
-console.log(mongoUri);
+import { OAuthModule } from './module/auth/oauth/oauth.module';
 
 @Module({
   imports: [
@@ -22,6 +19,7 @@ console.log(mongoUri);
     UserModule,
     DatabaseModule,
     AuthModule,
+    OAuthModule,
   ],
   providers: [
     {
